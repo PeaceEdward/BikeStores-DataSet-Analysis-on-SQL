@@ -34,7 +34,6 @@ WHERE YEAR(order_date)='2017'
 GROUP BY MONTH(order_date)
 ORDER BY Total_Amount DESC;
 
-
 --Total sales made in the months of 2018
 SELECT CASE MONTH(order_date)
 WHEN 1 THEN 'January'
@@ -59,7 +58,6 @@ FROM (
 WHERE YEAR(order_date)='2018'
 GROUP BY MONTH(order_date)
 ORDER BY Months_of_2018 DESC;
-
 
 --Total sales made in the month of 2016
 SELECT CASE MONTH(order_date)
@@ -86,7 +84,6 @@ WHERE YEAR(order_date)='2016'
 GROUP BY MONTH(order_date)
 ORDER BY Total_Amount DESC;
 
-
 --Top-selling bike brands by quantity or revenue
 SELECT brand_name,SUM(quantity) as total_quantity
 FROM
@@ -102,7 +99,6 @@ FROM
  GROUP BY brand_name
  ORDER BY total_quantity DESC
 
-
 --Brands bringing in the highest revenue
 SELECT brand_name,FORMAT(SUM(list_price-(list_price*discount)), '#,###,###') as total_revenue
 FROM
@@ -117,7 +113,6 @@ FROM
  pr.product_id=oi.product_id) AS joinedtables
  GROUP BY brand_name
  ORDER BY total_revenue DESC
-
 
 --Brands bringing in the highest revenue with total income
 WITH NewRevenueCTE AS (
@@ -139,7 +134,6 @@ SELECT
 FROM
   NewRevenueCTE;
 
-
 --Sales performance by different sales staff (number of sales, total revenue generated) 
 SELECT 
     first_name,
@@ -150,7 +144,6 @@ JOIN sales.staffs as sta ON ord.staff_id=sta.staff_id
 JOIN sales.order_items as ori ON ord.order_id=ori.order_id
 GROUP BY first_name,last_name
 ORDER BY generated_revenue DESC
-
 
 --Average order value and total number of orders.
 SELECT COUNT(*) As Number_of_orders
@@ -176,7 +169,6 @@ FROM
 GROUP BY 
     order_id;
 
-
 --Total no. of bikes bought, Most and least frequently purchased bike brands
 SELECT 
   bra.brand_name,
@@ -186,7 +178,6 @@ FROM production.brands as bra
 JOIN production.products as pro ON bra.brand_id=pro.brand_id
 JOIN sales.order_items as ori ON pro.product_id=ori.product_id
 GROUP BY bra.brand_name
-
 
 --Average shipping time
 SELECT 
@@ -210,8 +201,6 @@ JOIN sales.stores as sst
 ON pst.store_id=sst.store_id
 GROUP BY store_name
 
-
-
 --Top Customers
 SELECT 
   scu.first_name,
@@ -224,7 +213,6 @@ JOIN sales.order_items as sori ON sor.order_id=sori.order_id
 GROUP BY first_name,last_name
 ORDER BY quantity_bought DESC
 
-
 --Duplicate Findings
 SELECT 
   customer_id,
@@ -232,7 +220,6 @@ SELECT
 FROM sales.customers
 GROUP BY customer_id
 HAVING count(*) > 1
-
 
 --Count of customers who have ordered the same product
 WITH Temp AS (
@@ -255,7 +242,6 @@ JOIN Temp as t2 ON t1.product_id =t2.product_id AND t1.customer_id <> t2.custome
 GROUP BY t1.product_id
 ORDER BY customer_count DESC
 
-
 --Revenue from each product
 SELECT 
     ori.product_id,
@@ -270,7 +256,6 @@ JOIN sales.customers as cus ON cus.customer_id=ord.customer_id
 GROUP BY product_id 
 
 ORDER BY product_revenue DESC
-
 
 --Customers who ordered specific products
 SELECT 
@@ -287,7 +272,6 @@ JOIN sales.order_items as ori ON ord.order_id=ori.order_id
 JOIN sales.customers as cus ON cus.customer_id=ord.customer_id
 
 WHERE ori.product_id =3
-
 
 ---Number of sales made per product
 SELECT 
@@ -325,7 +309,6 @@ GROUP BY
     cus.last_name
 HAVING COUNT(ori.product_id) >1
 
-
 -- Find customers who bought the same product more than once
 WITH CustomerProductOrders AS (
     SELECT
@@ -357,7 +340,6 @@ WHERE
 ORDER BY
     customer_id, product_id;
 
-
 --Identify staff members who manage other staff members
 SELECT
      employee.staff_id,
@@ -369,8 +351,3 @@ JOIN sales.staffs as manager ON employee.manager_id=manager.staff_id
 WHERE employee.staff_id <> manager.staff_id
 
 
----Identify orders placed on the same day
-SELECT *
-FROM sales.orders as s1
-JOIN sales.orders as s2 ON s1.order_date=s2.order_date
-WHERE s1.order_id <> s2.order_id
